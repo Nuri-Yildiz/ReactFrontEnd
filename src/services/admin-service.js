@@ -6,6 +6,12 @@ class AdminService {
 
     getUsers(){
         return axios.get(API_URL + 'users');
-        
-    }}
+    }
+    getRoles(){
+        return axios.get(API_URL + 'roles');
+    }
+    postUpdatedUser(){
+        return axios.post(API_URL + 'updateRole');
+    }
+}
 export default new AdminService();

@@ -1,21 +1,52 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
 import AdminService from "../services/admin-service";
+import AuthService from "../services/auth.service";
 
 
 
 const BoardAdmin = (props)=> { 
   const [content, setContent] = useState("");
   const [users, setUsers] = useState([]);
-  const[usernames, setUsernames] = useState([]);
+  const[roles, setRoles] = useState([]);
+  const[currentUser,setCurrentUser]= useState("");
+  const[updatedRole,setUpdatedRole] = useState();
+  const[updatedUser,setUpdatedUser] = useState();
+  const[updatedDesc,setUpdatedDesc] = useState();
 
-  
+  const getCurrentUser = async()=>{
+    const currentUser = AuthService.currentUser();
+    setCurrentUser(currentUser.data.map(key=>key.name));
+  }
+
+function onChangeRole(event) {
+  setUpdatedRole(roles.filter( data => {return data.name === event.target.value}));
+}
+
+function onChangeUser(event){
+  setUpdatedUser(users.filter( data => {return data.username === event.target.value})); 
+  }
+
+function onClick(){
+  //let c = updatedUser;
+  //c.roles= updatedRole;
+  //setUpdatedUser(c);
+  updatedUser.roles= JSON.stringify(updatedRole);
+  console.log(updatedUser);
+  //console.log(c);
+  //console.log(updatedUser);
+}
+
+console.log(updatedUser);
+console.log(updatedRole);
 
   useEffect(()=>{
     getAllUsers();
+    getAllRoles();
     UserService.getAdminBoard().then(
       response => {
         setContent(response.data);
+        console.log(JSON.stringify(response.data));
       },
       error => {
         setContent(
@@ -28,6 +59,11 @@ const BoardAdmin = (props)=> {
       }
     );
   }, [])
+
+  const getAllRoles = async()=>{
+    const response = await AdminService.getRoles();
+    setRoles(response.data.map(key=>key));
+  }
 
   // useEffect(()=>{
   //   AdminService.getUsers().then(
@@ -50,9 +86,7 @@ const BoardAdmin = (props)=> {
   const getAllUsers = async()=>{
     const response = await AdminService.getUsers();
     setUsers(response.data.map(key=>key));
-    setUsernames(response.data.map(key=>key.username));
   }
-  console.log(users[0]);
   
     return (
       <div className="container">
@@ -60,13 +94,19 @@ const BoardAdmin = (props)=> {
           <h3>{content}</h3>
         </header>
         <div>
-        <select id='template-select'>
-        {usernames.map(option => <option key={option} value={option}>{option}</option>)}
+        <form>
+        <select onChange={onChangeUser} >
+        {users.map(option => <option key={option.username} value={option.username}>{option.username}</option>)}
          </select>
+         <select onChange={onChangeRole}>
+         {roles.map(option => <option key={option.name} value={option.name}>{option.name}</option>)}
+         </select>
+         <input type="text" name="name"/>
+         <button onClick={onClick}>Edit</button>
+         </form>
         </div>
       </div>
     );
-
   } 
 
 export default BoardAdmin; 
