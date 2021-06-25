@@ -11,7 +11,7 @@ class AdminService {
         return axios.get(API_URL + 'roles');
     }
     updateUser(user) {
-        return axios.post(API_URL + 'updatedUser', {user});
+        return axios.put(API_URL + 'updatedUser', {user});
       }
 }
 export default new AdminService();

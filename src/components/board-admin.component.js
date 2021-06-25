@@ -37,8 +37,9 @@ function onClick(){
   setUpdatedUser(prevState => {
     let c = Object.assign({}, prevState.updatedUser);  
     c.roles = updatedRole;                                             
-    return { c }; })                                   
- 
+    return { c }; }) 
+    
+  AdminService.updateUser(updatedUser);
 }
 console.log(updatedUser);
 console.log(updatedRole);
